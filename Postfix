@@ -1,0 +1,140 @@
+// Lab 3 Data Structure
+// Postfix evaluation
+
+#include <iostream>
+#include <stack>
+using namespace std;
+#define MAX 1000 //max size of the stack used
+
+//postfix class
+class Postfix
+{
+private:
+  int stack[MAX];
+  int top;
+  string expr;
+  
+public:
+  Postfix();
+  void setExpr(string s);
+  void push(int value);
+  int pop();
+  void evaluate();
+  void show();
+};
+
+//construct empty stack
+Postfix::Postfix()
+{
+  top = -1;
+}
+//set expression string
+void Postfix::setExpr(string s)
+{
+  expr = s;
+}
+
+//stack push
+void Postfix::push(int value)
+
+{
+  if (top == MAX - 1)
+      std::cout << endl
+           << "Stack is full";
+  else
+  {
+      top++;
+      stack[top] = value;
+  }
+}
+
+//stack pop
+int Postfix ::pop()
+{
+  if (top == -1)
+  {
+      cout << endl
+           << "Stack is empty";
+      return 0;
+  }
+  int data = stack[top];
+  top--;
+  return data;
+}
+
+//evaluate expression string
+void Postfix::evaluate()
+{
+  int i = 0;
+  while (expr[i])
+  {
+      //if space or tab, move on
+      if (expr[i] == ' ' || expr[i] == '\t')
+      {
+          i++;
+          continue;
+      }
+      //if operand, push to stack
+      if (isdigit(expr[i]))
+      {
+          int temp = expr[i] - '0';
+          push(temp);
+      }
+
+      // in operator, pop two operands, apply operator and push again
+
+      else
+      {
+          int top1 = pop();
+          int top2 = pop();
+          int result;
+          switch (expr[i])
+          {
+          case '+':
+              result = top2 + top1;
+              break;
+          case '-':
+              result = top2 - top1;
+              break;
+          case '/':
+              result = top2 / top1;
+
+              break;
+          case '*':
+              result = top2 * top1;
+              break;
+          }
+          push(result);
+      }
+      i++;
+  }
+}
+
+//Display the result of expression
+
+void Postfix ::show()
+{
+  int result = pop();
+  std::cout << " The result of evaluaton is: "<< result << endl;
+  std::cout << std::endl;
+  
+}
+
+//driver function
+int main()
+
+{
+  string expr;
+  std::cout << "--------PostFix Evaluation---------" << endl;
+  while(expr!="q")
+  {
+  	std::cout << "\n Please enter the Postfix expression to evaluate or 'q' to quit: ";
+    getline(std::cin, expr);
+    Postfix p;
+  	p.setExpr(expr);
+  	p.evaluate();
+  	p.show();
+   }
+   return 0;
+
+}
